@@ -1,6 +1,7 @@
+import wra.MyWrapper;
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -9,27 +10,16 @@ public class Main {
             System.out.println("START SERVER");
 
             while (true)
-                try (
-                        Socket socket = serSocket.accept();
-
-                        BufferedWriter writer = new BufferedWriter(
-                                new OutputStreamWriter(
-                                        socket.getOutputStream()));
-                        BufferedReader reader =
-                                new BufferedReader(
-                                        new InputStreamReader(
-                                                socket.getInputStream()));
-                )  {
-                    String request = reader.readLine();
+                try ( MyWrapper myWrapper = new MyWrapper(serSocket)) {
+                    String request = myWrapper.readMessage();
                     System.out.println("Request " + request);
-                    String response = ("Hello from SERVER " + request.length());
+                    String response = (int) (Math.random() * 10 -10) + "";
+                    myWrapper.writeMessage(response);
                     System.out.println("Response: " + response);
-                    System.out.println(response);
-                    writer.write(response);
-                    writer.newLine();
-                    writer.flush();
-                }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
 
+                }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
