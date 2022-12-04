@@ -1,29 +1,40 @@
-import JavaCalculator.Calculator;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-//            ServerSocket serSocket = new ServerSocket(8000);
-//            System.out.println("START SERVER");
-//
-//            Socket socket = serSocket.accept();
-//            System.out.println("CLIENT CONNECTED");
-//
-//        BufferedWriter writer = new BufferedWriter(
-//                new OutputStreamWriter(
-//                        socket.getOutputStream()));
-//        writer.write("Hello from SERVER");
-//        writer.newLine();
-//        writer.flush();
-//
-//        writer.close();
-//        socket.close();
-//        serSocket.close();
+    public static void main(String[] args) {
+        try ( ServerSocket serSocket = new ServerSocket(8000))
+        {
+            System.out.println("START SERVER");
 
-        Calculator infoValue = new Calculator();
-        infoValue.infoCalculator();
+            while (true)
+                try (
+                        Socket socket = serSocket.accept();
+
+                        BufferedWriter writer = new BufferedWriter(
+                                new OutputStreamWriter(
+                                        socket.getOutputStream()));
+                        BufferedReader reader =
+                                new BufferedReader(
+                                        new InputStreamReader(
+                                                socket.getInputStream()));
+                )  {
+                    String request = reader.readLine();
+                    System.out.println("Request " + request);
+                    String response = ("Hello from SERVER " + request.length());
+                    System.out.println("Response: " + response);
+                    System.out.println(response);
+                    writer.write(response);
+                    writer.newLine();
+                    writer.flush();
+                }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 }
