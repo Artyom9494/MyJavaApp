@@ -1,3 +1,4 @@
+import MyFile.MyFile;
 import wra.MyWrapper;
 import java.io.*;
 import java.net.ServerSocket;
@@ -25,6 +26,7 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-
+//        MyFile d = new MyFile();
+//        d.writer("Hello world");
     }
 }
